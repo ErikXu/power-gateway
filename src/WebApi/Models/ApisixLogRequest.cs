@@ -4,12 +4,12 @@
     {
         public ApisixResponse response { get; set; }
         public ApisixRequest request { get; set; }
-        public int apisix_latency { get; set; }
+        public double apisix_latency { get; set; }
         public string client_ip { get; set; }
         public string service_id { get; set; }
         public Server server { get; set; }
         public int upstream_latency { get; set; }
-        public float latency { get; set; }
+        public double latency { get; set; }
         public long start_time { get; set; }
         public string route_id { get; set; }
         public string upstream { get; set; }
