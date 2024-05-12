@@ -1,64 +1,77 @@
-﻿namespace WebApi.Models
+﻿using Newtonsoft.Json;
+
+namespace WebApi.Models
 {
     public class ApisixLogRequest
     {
-        public ApisixResponse response { get; set; }
-        public ApisixRequest request { get; set; }
-        public double apisix_latency { get; set; }
-        public string client_ip { get; set; }
-        public string service_id { get; set; }
-        public Server server { get; set; }
-        public int upstream_latency { get; set; }
-        public double latency { get; set; }
-        public long start_time { get; set; }
-        public string route_id { get; set; }
-        public string upstream { get; set; }
+        [JsonProperty("response")]
+        public ApisixResponse Response { get; set; }
+
+        [JsonProperty("request")]
+        public ApisixRequest Request { get; set; }
+
+        [JsonProperty("apisix_latency")]
+        public double ApisixLatency { get; set; }
+
+        [JsonProperty("client_ip")]
+        public string ClientIp { get; set; }
+
+        [JsonProperty("service_id")]
+        public string ServiceId { get; set; }
+
+        [JsonProperty("server")]
+        public Dictionary<string, string> Server { get; set; }
+
+        [JsonProperty("upstream_latency")]
+        public int UpstreamLatency { get; set; }
+
+        [JsonProperty("latency")]
+        public double Latency { get; set; }
+
+        [JsonProperty("start_time")]
+        public long StartTime { get; set; }
+
+        [JsonProperty("route_id")]
+        public string RouteId { get; set; }
+
+        [JsonProperty("upstream")]
+        public string Upstream { get; set; }
     }
 
     public class ApisixResponse
     {
-        public int status { get; set; }
-        public Headers headers { get; set; }
-        public int size { get; set; }
-        public string body { get; set; }
-    }
+        [JsonProperty("status")]
+        public int Status { get; set; }
 
-    public class Headers
-    {
-        public string server { get; set; }
-        public string contenttype { get; set; }
-        public string connection { get; set; }
-        public string date { get; set; }
+        [JsonProperty("headers")]
+        public Dictionary<string, string> Headers { get; set; }
+
+        [JsonProperty("size")]
+        public int Size { get; set; }
+
+        [JsonProperty("body")]
+        public string Body { get; set; }
     }
 
     public class ApisixRequest
     {
-        public Querystring querystring { get; set; }
-        public Headers1 headers { get; set; }
-        public string url { get; set; }
-        public string uri { get; set; }
-        public int size { get; set; }
-        public string method { get; set; }
-    }
+        [JsonProperty("querystring")]
+        public Dictionary<string, string> QueryString { get; set; }
 
-    public class Querystring
-    {
-    }
+        [JsonProperty("headers")]
+        public Dictionary<string, string> Headers { get; set; }
 
-    public class Headers1
-    {
-        public string secfetchsite { get; set; }
-        public string acceptencoding { get; set; }
-        public string secfetchmode { get; set; }
-        public string host { get; set; }
-        public string referer { get; set; }
-        public string secchua { get; set; }
-        public string acceptlanguage { get; set; }
-        public string secchuamobile { get; set; }
-        public string secfetchdest { get; set; }
-        public string accept { get; set; }
-        public string secchuaplatform { get; set; }
-        public string useragent { get; set; }
+        [JsonProperty("url")]
+        public string Url { get; set; }
+
+        [JsonProperty("uri")]
+        public string Uri { get; set; }
+
+        [JsonProperty("size")]
+        public int Size { get; set; }
+
+        [JsonProperty("method")]
+        public string Method { get; set; }
     }
 
     public class Server
