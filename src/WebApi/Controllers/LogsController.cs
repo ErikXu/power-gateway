@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using WebApi.Models;
 
 namespace WebApi.Controllers
 {
@@ -14,13 +16,9 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("apisix")]
-        public async Task<IActionResult> SaveApisixLog()
+        public IActionResult SaveApisixLog([FromBody] ApisixLogRequest request)
         {
-            using (var reader = new StreamReader(HttpContext.Request.Body))
-            {
-                var postData = await reader.ReadToEndAsync();
-                _logger.LogInformation(postData);
-            }
+            _logger.LogInformation(request.ToString());
             return Ok();
         }
     }
