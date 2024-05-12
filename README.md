@@ -30,7 +30,10 @@ curl -X 'POST' \
             "body": "{\"message\":\"Pong\"}"
         },
         "request": {
-            "querystring": {},
+            "querystring": {
+                "a": "a",
+                "b": "b"
+            },
             "headers": {
                 "sec-fetch-site": "same-origin",
                 "accept-encoding": "gzip, deflate, br, zstd",
