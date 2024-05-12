@@ -22,7 +22,7 @@ namespace WebApi.Controllers
             using (var reader = new StreamReader(HttpContext.Request.Body))
             {
                 var postData = await reader.ReadToEndAsync();
-                var obj = JsonConvert.DeserializeObject<ApisixLogRequest>(postData);
+                var obj = JsonConvert.DeserializeObject<List<ApisixLogRequest>>(postData);
                 _logger.LogInformation(obj?.ToString());
             }
             return Ok();
