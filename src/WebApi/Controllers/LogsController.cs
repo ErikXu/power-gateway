@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using WebApi.Models;
+using WebApi.Mongo;
+using WebApi.Mongo.Entities;
 
 namespace WebApi.Controllers
 {
@@ -9,10 +10,12 @@ namespace WebApi.Controllers
     [ApiController]
     public class LogsController : ControllerBase
     {
+        private readonly MongoDbContext _mongoDbContext;
         private readonly ILogger<LogsController> _logger;
 
-        public LogsController(ILogger<LogsController> logger)
+        public LogsController(MongoDbContext mongoDbContext, ILogger<LogsController> logger)
         {
+            _mongoDbContext = mongoDbContext;
             _logger = logger;
         }
 
@@ -22,8 +25,19 @@ namespace WebApi.Controllers
             using (var reader = new StreamReader(HttpContext.Request.Body))
             {
                 var postData = await reader.ReadToEndAsync();
-                var obj = JsonConvert.DeserializeObject<List<ApisixLogRequest>>(postData);
-                _logger.LogInformation(obj?.ToString());
+                var requests = JsonConvert.DeserializeObject<List<ApisixLogRequest>>(postData);
+                await _mongoDbContext.Collection<ApisixLogRequest>().InsertManyAsync(requests);
+            }
+            return Ok();
+        }
+
+        [HttpPost("apisix/raw")]
+        public async Task<IActionResult> SaveRawApisixLog()
+        {
+            using (var reader = new StreamReader(HttpContext.Request.Body))
+            {
+                var postData = await reader.ReadToEndAsync();
+                _logger.LogInformation(postData);
             }
             return Ok();
         }
