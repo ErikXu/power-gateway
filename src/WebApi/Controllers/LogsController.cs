@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using MongoDB.Bson;
+using MongoDB.Driver;
 using Newtonsoft.Json;
 using WebApi.Mongo;
 using WebApi.Mongo.Entities;
@@ -40,6 +42,16 @@ namespace WebApi.Controllers
                 _logger.LogInformation(postData);
             }
             return Ok();
+        }
+
+        [HttpGet("apisix")]
+        public async Task<IActionResult> ListApisixLog()
+        {
+            var list = await _mongoDbContext.Collection<ApisixLogRequest>()
+                                            .Find(new BsonDocument())
+                                            .Sort(Builders<ApisixLogRequest>.Sort.Ascending(n => n.StartTime))
+                                            .ToListAsync();
+            return Ok(list);
         }
     }
 }
