@@ -13,7 +13,7 @@ dotnet run --urls=http://*:6000
 
 ``` bash
 curl -X 'POST' \
-  'http://localhost:5251/api/Logs/apisix' \
+  'http://localhost:5000/api/Logs/apisix' \
   -H 'accept: */*' \
   --data-raw '
 [

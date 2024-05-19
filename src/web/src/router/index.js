@@ -47,12 +47,20 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     redirect: '/apisix-request-log',
-    children: [{
-      path: 'apisix-request-log',
-      name: '请求日志',
-      component: () => import('@/views/apisix/request-log'),
-      meta: { title: '请求日志', icon: 'el-icon-document' }
-    }]
+    children: [
+      {
+        path: 'apisix-request-log',
+        name: 'apisix-request-log',
+        component: () => import('@/views/apisix/request-log'),
+        meta: { title: 'Request Log', icon: 'el-icon-document' }
+      },
+      {
+        path: '/apisix-request-log/:id',
+        name: 'apisix-request-log-detail',
+        component: () => import('@/views/apisix/detail'),
+        meta: { title: 'Request Log Detail' },
+        hidden: true
+      }]
   },
 
   // 404 page must be placed at the end !!!

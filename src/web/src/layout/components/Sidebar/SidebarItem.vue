@@ -97,24 +97,10 @@ export default {
 <i18n>
 {
   "en": {
-    "Device": "Device",
-    "Stress Test": "Stress Test",
-    "Api Test": "Api Test",
-    "Scene": "Scene",
-    "Task": "Task",
-    "Agent": "Agent",
-    "Schedule": "Schedule",
-    "Callback": "Callback"
+    "Request Log": "Request Log"
   },
   "zh": {
-    "Device": "设备",
-    "Stress Test": "压力测试",
-    "Api Test": "API 测试",
-    "Scene": "场景",
-    "Task": "任务",
-    "Agent": "代理终端",
-    "Schedule": "定时任务",
-    "Callback": "回调"
+    "Request Log": "请求日志"
   }
 }
 </i18n>

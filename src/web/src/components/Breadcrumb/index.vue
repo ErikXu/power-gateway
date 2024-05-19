@@ -81,27 +81,13 @@ export default {
 {
   "en": {
     "Home": "Home",
-    "Device": "Device",
-    "Stress Test": "Stress Test",
-    "Api Test": "Api Test",
-    "Scene": "Scene",
-    "Scene Detail": "Scene Detail",
-    "Task": "Task",
-    "Agent": "Agent",
-    "Schedule": "Schedule",
-    "Callback": "Callback"
+    "Request Log": "Request Log",
+    "Request Log Detail": "Request Log Detail"
   },
   "zh": {
     "Home": "主页",
-    "Device": "设备",
-    "Stress Test": "压力测试",
-    "Api Test": "API 测试",
-    "Scene": "场景",
-    "Scene Detail": "场景详情",
-    "Task": "任务",
-    "Agent": "代理终端",
-    "Schedule": "定时任务",
-    "Callback": "回调"
+    "Request Log": "请求日志",
+    "Request Log Detail": "请求日志详情"
   }
 }
 </i18n>

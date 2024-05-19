@@ -13,29 +13,41 @@
           {{ scope.$index + 1 }}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('Url')" align="left">
+      <el-table-column :label="$t('Start Time')" align="left" width="160">
         <template slot-scope="{row}">
-          <el-tag v-if="row.request.method === 'GET'" size="small" effect="dark" color="#61AFFE" style="border-color: #d9ecff;">{{ row.request.method }}</el-tag>
-          <el-tag v-if="row.request.method === 'POST'" size="small" effect="dark" color="#49C990" style="border-color: #d9ecff;">{{ row.request.method }}</el-tag>
-          <el-tag v-if="row.request.method === 'PUT'" size="small" effect="dark" color="#FCA130" style="border-color: #d9ecff;">{{ row.request.method }}</el-tag>
-          <el-tag v-if="row.request.method === 'PATCH'" size="small" effect="dark" color="#50E3C2" style="border-color: #d9ecff;">{{ row.request.method }}</el-tag>
-          <el-tag v-if="row.request.method === 'DELETE'" size="small" effect="dark" color="#F93E3E" style="border-color: #d9ecff;">{{ row.request.method }}</el-tag>
-          <span> {{ row.request.url }} </span>
+          <span>{{ row.startTime | simpleFormat }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('Upstream')" align="left">
+      <el-table-column :label="$t('Url')" align="left">
+        <template slot-scope="{row}">
+          <el-tag v-if="row.method === 'GET'" size="small" effect="dark" color="#61AFFE" style="border-color: #d9ecff;">{{ row.method }}</el-tag>
+          <el-tag v-if="row.method === 'POST'" size="small" effect="dark" color="#49C990" style="border-color: #d9ecff;">{{ row.method }}</el-tag>
+          <el-tag v-if="row.method === 'PUT'" size="small" effect="dark" color="#FCA130" style="border-color: #d9ecff;">{{ row.method }}</el-tag>
+          <el-tag v-if="row.method === 'PATCH'" size="small" effect="dark" color="#50E3C2" style="border-color: #d9ecff;">{{ row.method }}</el-tag>
+          <el-tag v-if="row.method === 'DELETE'" size="small" effect="dark" color="#F93E3E" style="border-color: #d9ecff;">{{ row.method }}</el-tag>
+          <span> {{ row.url }} </span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('Upstream')" align="center" width="140">
         <template slot-scope="{row}">
           <span>{{ row.upstream }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('Latency')" align="left">
+      <el-table-column :label="$t('Latency')" align="center" width="120">
         <template slot-scope="{row}">
-          <span>{{ row.latency }}</span>
+          <span>{{ row.latency.toFixed(2) }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('Status')" align="left">
+      <el-table-column :label="$t('Status')" align="center" width="80">
         <template slot-scope="{row}">
-          <span>{{ row.response.status }}</span>
+          <span>{{ row.status }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('Operation')" align="center" width="80">
+        <template slot-scope="{row}">
+          <el-button type="primary" size="mini" @click="detail(row)">
+            {{ $t('Detail') }}
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -59,6 +71,9 @@ export default {
       getApisixRequestLogList().then(response => {
         this.list = response
       })
+    },
+    detail(row) {
+      this.$router.push({ name: 'apisix-request-log-detail', params: { id: row.id }})
     }
   }
 }
@@ -68,17 +83,23 @@ export default {
 {
   "en": {
     "Request Log": "Request Log",
+    "Start Time": "Start Time",
     "Url": "Url",
     "Upstream": "Upstream",
     "Latency": "Latency - ms",
-    "Status": "Status"
+    "Status": "Status",
+    "Operation": "Operation",
+    "Detail": "Detail"
   },
   "zh": {
     "Request Log": "请求日志",
-    "Url": "Url",
-    "Upstream": "Upstream",
+    "Start Time": "请求时间",
+    "Url": "请求地址",
+    "Upstream": "上游",
     "Latency": "延时 - 毫秒",
-    "Status": "状态码"
+    "Status": "状态码",
+    "Operation": "操作",
+    "Detail": "详情"
   }
 }
 </i18n>

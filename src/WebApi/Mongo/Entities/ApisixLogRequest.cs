@@ -94,5 +94,9 @@ namespace WebApi.Mongo.Entities
         [BsonElement("method")]
         [JsonProperty("method")]
         public string Method { get; set; }
+
+        [BsonElement("body")]
+        [JsonProperty("body")]
+        public string Body { get; set; }
     }
 }

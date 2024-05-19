@@ -7,3 +7,9 @@ export function getApisixRequestLogList() {
   })
 }
 
+export function getApisixRequestLog(id) {
+  return request({
+    url: `/api/logs/apisix/${id}`,
+    method: 'get'
+  })
+}
