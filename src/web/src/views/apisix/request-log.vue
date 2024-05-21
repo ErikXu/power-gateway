@@ -51,6 +51,10 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <div class="pagination-container" style="margin-top:10px; text-align:right;">
+      <el-pagination background layout="total, sizes, prev, pager, next, jumper" :page-sizes="[10,15,20,30,50]" :current-page="query.pageIndex" :page-size="query.pageSize" :total="query.total" @current-change="pageIndexChange" @size-change="pageSizeChange" />
+    </div>
   </div>
 </template>
 
@@ -60,7 +64,12 @@ import { getApisixRequestLogList } from '@/api/log'
 export default {
   data() {
     return {
-      list: []
+      list: [],
+      query: {
+        pageIndex: 1,
+        pageSize: 10,
+        total: 0
+      }
     }
   },
   created() {
@@ -68,9 +77,18 @@ export default {
   },
   methods: {
     fetchData() {
-      getApisixRequestLogList().then(response => {
-        this.list = response
+      getApisixRequestLogList(this.query.pageIndex, this.query.pageSize).then(response => {
+        this.list = response.records
+        this.query.total = response.total
       })
+    },
+    pageIndexChange(val) {
+      this.query.pageIndex = val
+      this.fetchData()
+    },
+    pageSizeChange(val) {
+      this.query.pageSize = val
+      this.fetchData()
     },
     detail(row) {
       this.$router.push({ name: 'apisix-request-log-detail', params: { id: row.id }})

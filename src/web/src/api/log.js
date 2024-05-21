@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-export function getApisixRequestLogList() {
+export function getApisixRequestLogList(pageIndex, pageSize) {
   return request({
-    url: '/api/logs/apisix',
+    url: `/api/logs/apisix?pageIndex=${pageIndex}&pageSize=${pageSize}`,
     method: 'get'
   })
 }

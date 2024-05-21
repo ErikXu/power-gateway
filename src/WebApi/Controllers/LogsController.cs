@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Newtonsoft.Json;
 using WebApi.Models;
 using WebApi.Mongo;
 using WebApi.Mongo.Entities;
+using MongoDB.Driver.Linq;
+using DnsClient.Protocol;
 
 namespace WebApi.Controllers
 {
@@ -46,12 +47,21 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("apisix")]
-        public async Task<IActionResult> ListApisixLog()
+        public IActionResult ListApisixLog([FromQuery] int? pageIndex, [FromQuery] int? pageSize)
         {
-            var logs = await _mongoDbContext.Collection<ApisixLogRequest>()
-                                            .Find(new BsonDocument())
-                                            .Sort(Builders<ApisixLogRequest>.Sort.Ascending(n => n.StartTime))
-                                            .ToListAsync();
+            if (pageIndex == null || pageIndex.Value <= 0)
+            {
+                pageIndex = 1;
+            }
+
+            if (pageSize == null || pageSize.Value <= 0)
+            {
+                pageSize = 1;
+            }
+
+            var query = _mongoDbContext.Collection<ApisixLogRequest>().AsQueryable();
+
+            var logs = query.OrderBy(n => n.StartTime).OrderByDescending(n => n.Id).Skip((pageIndex.Value - 1) * pageSize.Value).Take(pageSize.Value).ToList();
 
             var list = logs.Select(n => new ApisixLogItem
             {
@@ -64,7 +74,15 @@ namespace WebApi.Controllers
                 StartTime = DateTimeOffset.FromUnixTimeMilliseconds(n.StartTime).UtcDateTime
             });
 
-            return Ok(list);
+            var result = new PagingResult<ApisixLogItem>
+            {
+                PageIndex = pageIndex.Value,
+                PageSize = pageSize.Value,
+                Total = query.Count(),
+                Records = list
+            };
+
+            return Ok(result);
         }
 
         [HttpGet("apisix/{id}")]
