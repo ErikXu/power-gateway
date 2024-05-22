@@ -20,6 +20,8 @@
 
         public List<KeyValueItem<string, string>> RequestHeaders { get; set; }
 
+        public List<KeyValueItem<string, string>> Jwt { get; set; }
+
         public List<KeyValueItem<string, string>> QueryStrings { get; set; }
 
         public string RequestBody { get; set; }
