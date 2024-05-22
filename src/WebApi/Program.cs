@@ -1,5 +1,6 @@
 
 using dotenv.net;
+using WebApi.HostedServices;
 using WebApi.Mongo;
 
 namespace WebApi
@@ -21,6 +22,8 @@ namespace WebApi
 
             builder.Services.Add(ServiceDescriptor.Singleton(new MongoDbContext(Environment.GetEnvironmentVariable("MONGO_CONNECTION"), Environment.GetEnvironmentVariable("MONGO_DBNAME"))));
 
+            builder.Services.AddHostedService<CalculateService>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -38,3 +41,4 @@ namespace WebApi
         }
     }
 }
+
