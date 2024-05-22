@@ -7,6 +7,7 @@ using WebApi.Mongo;
 using WebApi.Mongo.Entities;
 using MongoDB.Driver.Linq;
 using DnsClient.Protocol;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace WebApi.Controllers
 {
@@ -30,6 +31,18 @@ namespace WebApi.Controllers
             {
                 var postData = await reader.ReadToEndAsync();
                 var requests = JsonConvert.DeserializeObject<List<ApisixLogRequest>>(postData);
+
+                foreach (var request in requests)
+                {
+                    if (request.Request.Headers.ContainsKey("authorization"))
+                    {
+                        var jwt = request.Request.Headers["authorization"].Replace("Bearer ", string.Empty);
+                        var handler = new JwtSecurityTokenHandler();
+                        var token = handler.ReadJwtToken(jwt);
+                        request.Request.Jwt = token.Claims.ToDictionary(k => k.Type, v => v.Value);
+                    }
+                }
+
                 await _mongoDbContext.Collection<ApisixLogRequest>().InsertManyAsync(requests);
             }
             return Ok();

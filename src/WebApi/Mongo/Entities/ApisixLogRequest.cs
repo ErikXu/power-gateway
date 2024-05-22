@@ -79,6 +79,9 @@ namespace WebApi.Mongo.Entities
         [JsonProperty("headers")]
         public Dictionary<string, string> Headers { get; set; }
 
+        [BsonElement("jwt")]
+        public Dictionary<string, string> Jwt { get; set; }
+
         [BsonElement("url")]
         [JsonProperty("url")]
         public string Url { get; set; }
