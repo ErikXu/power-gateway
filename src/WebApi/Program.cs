@@ -20,9 +20,12 @@ namespace WebApi
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddMemoryCache();
+
             builder.Services.Add(ServiceDescriptor.Singleton(new MongoDbContext(Environment.GetEnvironmentVariable("MONGO_CONNECTION"), Environment.GetEnvironmentVariable("MONGO_DBNAME"))));
 
             builder.Services.AddHostedService<CalculateService>();
+            builder.Services.AddHostedService<RefreshCacheService>();
 
             var app = builder.Build();
 
@@ -39,6 +42,8 @@ namespace WebApi
 
             app.Run();
         }
+
+        public static string FieldProjectionListKey { get; } = "Cache_FieldProjectionList";
     }
 }
 
