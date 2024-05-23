@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebApi.Models;
 using WebApi.Mongo.Entities;
 using WebApi.Mongo;
+using MongoDB.Bson;
 
 namespace WebApi.Controllers
 {
@@ -18,7 +19,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("configs")]
-        public async Task<IActionResult> Create([FromBody] AlarmConfigForm form)
+        public async Task<IActionResult> CreateConfig([FromBody] AlarmConfigForm form)
         {
             var config = new AlarmConfig
             {
@@ -28,6 +29,23 @@ namespace WebApi.Controllers
             };
 
             await _mongoDbContext.Collection<AlarmConfig>().InsertOneAsync(config);
+
+            return Ok();
+        }
+
+        [HttpPost("rules")]
+        public async Task<IActionResult> CreateRule([FromBody] AlarmRuleForm form)
+        {
+            var rule = new AlarmRule
+            {
+                Title = form.Title,
+                Field = form.Field,
+                Operator = form.Operator,
+                Value = form.Value,
+                //AlarmConfigId = new ObjectId(form.AlarmConfigId)
+            };
+
+            await _mongoDbContext.Collection<AlarmRule>().InsertOneAsync(rule);
 
             return Ok();
         }
