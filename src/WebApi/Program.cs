@@ -2,6 +2,7 @@
 using dotenv.net;
 using WebApi.HostedServices;
 using WebApi.Mongo;
+using WebApi.Services;
 
 namespace WebApi
 {
@@ -23,6 +24,8 @@ namespace WebApi
             builder.Services.AddMemoryCache();
 
             builder.Services.Add(ServiceDescriptor.Singleton(new MongoDbContext(Environment.GetEnvironmentVariable("MONGO_CONNECTION"), Environment.GetEnvironmentVariable("MONGO_DBNAME"))));
+
+            builder.Services.AddSingleton<ILarkService, LarkService>();
 
             builder.Services.AddHostedService<CalculateService>();
             builder.Services.AddHostedService<RefreshCacheService>();
