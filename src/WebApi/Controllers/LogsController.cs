@@ -9,6 +9,7 @@ using MongoDB.Driver.Linq;
 using DnsClient.Protocol;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.Extensions.Caching.Memory;
+using DynamicExpresso;
 
 namespace WebApi.Controllers
 {
@@ -58,10 +59,29 @@ namespace WebApi.Controllers
                                 }
                             }
                         }
+
+                        var rules = _mongoDbContext.Collection<AlarmRule>().AsQueryable().ToList();
+
+                        var target = new Interpreter();
+                        foreach (var rule in rules)
+                        {
+                            var fieldValue = string.Empty;
+                            if (rule.Field == "status")
+                            {
+                                fieldValue = request.Response.Status.ToString();
+                            }
+
+                            var isMatched = target.Eval<bool>($"{fieldValue} {rule.Operator} {rule.Value}");
+                            if (isMatched)
+                            {
+                                // Alarm
+                            }
+                        }
                     }
                 }
 
                 await _mongoDbContext.Collection<ApisixLogRequest>().InsertManyAsync(requests);
+
             }
             return Ok();
         }
