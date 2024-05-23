@@ -1,4 +1,4 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 
 namespace WebApi.Mongo.Entities
@@ -82,6 +82,9 @@ namespace WebApi.Mongo.Entities
         [BsonElement("jwt")]
         public Dictionary<string, string> Jwt { get; set; }
 
+        [BsonElement("projection")]
+        public Dictionary<string, string> Projection { get; set; }
+
         [BsonElement("url")]
         [JsonProperty("url")]
         public string Url { get; set; }
@@ -103,3 +106,4 @@ namespace WebApi.Mongo.Entities
         public string Body { get; set; }
     }
 }
+

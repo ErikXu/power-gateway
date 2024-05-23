@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Newtonsoft.Json;
@@ -8,6 +8,7 @@ using WebApi.Mongo.Entities;
 using MongoDB.Driver.Linq;
 using DnsClient.Protocol;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace WebApi.Controllers
 {
@@ -17,11 +18,13 @@ namespace WebApi.Controllers
     {
         private readonly MongoDbContext _mongoDbContext;
         private readonly ILogger<LogsController> _logger;
+        private readonly IMemoryCache _memoryCache;
 
-        public LogsController(MongoDbContext mongoDbContext, ILogger<LogsController> logger)
+        public LogsController(MongoDbContext mongoDbContext, ILogger<LogsController> logger, IMemoryCache memoryCache)
         {
             _mongoDbContext = mongoDbContext;
             _logger = logger;
+            _memoryCache = memoryCache;
         }
 
         [HttpPost("apisix")]
@@ -40,6 +43,21 @@ namespace WebApi.Controllers
                         var handler = new JwtSecurityTokenHandler();
                         var token = handler.ReadJwtToken(jwt);
                         request.Request.Jwt = token.Claims.ToDictionary(k => k.Type, v => v.Value);
+
+                        if (request.Request.Jwt.Count > 0)
+                        {
+                            var projectionList = _memoryCache.Get<List<FieldProjection>>(Program.FieldProjectionListKey);
+                            request.Request.Projection = new Dictionary<string, string>();
+
+                            foreach (var projection in projectionList)
+                            {
+                                if (request.Request.Jwt.ContainsKey(projection.FromKey) && 
+                                    projection.Mappings.ContainsKey(request.Request.Jwt[projection.FromKey]))
+                                {
+                                    request.Request.Projection[projection.Key] = projection.Mappings[request.Request.Jwt[projection.FromKey]];
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -145,3 +163,4 @@ namespace WebApi.Controllers
         }
     }
 }
+
