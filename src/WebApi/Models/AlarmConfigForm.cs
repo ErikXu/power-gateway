@@ -1,5 +1,3 @@
-using MongoDB.Bson.Serialization.Attributes;
-
 namespace WebApi.Models
 {
     public class AlarmConfigForm

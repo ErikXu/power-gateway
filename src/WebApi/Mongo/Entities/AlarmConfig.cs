@@ -12,6 +12,9 @@ namespace WebApi.Mongo.Entities
 
         [BsonElement("botUrl")]
         public string BotUrl { get; set; }
+
+        [BsonElement("createAt")]
+        public DateTime CreateAt { get; set; }
     }
 }
 

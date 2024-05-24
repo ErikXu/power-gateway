@@ -97,10 +97,12 @@ export default {
 <i18n>
 {
   "en": {
-    "Request Log": "Request Log"
+    "Request Log": "Request Log",
+    "Alarm Config": "Alarm Config"
   },
   "zh": {
-    "Request Log": "请求日志"
+    "Request Log": "请求日志",
+    "Alarm Config": "告警配置"
   }
 }
 </i18n>

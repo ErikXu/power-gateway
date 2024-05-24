@@ -82,12 +82,14 @@ export default {
   "en": {
     "Home": "Home",
     "Request Log": "Request Log",
-    "Request Log Detail": "Request Log Detail"
+    "Request Log Detail": "Request Log Detail",
+    "Alarm Config": "Alarm Config"
   },
   "zh": {
     "Home": "主页",
     "Request Log": "请求日志",
-    "Request Log Detail": "请求日志详情"
+    "Request Log Detail": "请求日志详情",
+    "Alarm Config": "告警配置"
   }
 }
 </i18n>

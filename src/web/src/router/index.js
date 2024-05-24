@@ -62,6 +62,17 @@ export const constantRoutes = [
         hidden: true
       }]
   },
+  {
+    path: '/alarm',
+    component: Layout,
+    children: [
+      {
+        path: 'config',
+        name: 'config',
+        component: () => import('@/views/alarm/config'),
+        meta: { title: 'Alarm Config', icon: 'el-icon-document' }
+      }]
+  },
 
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }

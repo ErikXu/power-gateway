@@ -4,6 +4,7 @@ using WebApi.Models;
 using WebApi.Mongo.Entities;
 using WebApi.Mongo;
 using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace WebApi.Controllers
 {
@@ -25,12 +26,20 @@ namespace WebApi.Controllers
             {
                 Name = form.Name,
                 Type = form.Type,
-                BotUrl = form.BotUrl
+                BotUrl = form.BotUrl,
+                CreateAt = DateTime.UtcNow
             };
 
             await _mongoDbContext.Collection<AlarmConfig>().InsertOneAsync(config);
 
             return Ok();
+        }
+
+        [HttpGet("configs")]
+        public IActionResult GetConfigs()
+        {
+            var configs = _mongoDbContext.Collection<AlarmConfig>().AsQueryable().OrderByDescending(n => n.CreateAt).ToList();
+            return Ok(configs);
         }
 
         [HttpPost("rules")]
