@@ -158,7 +158,7 @@ export default {
     "Submit": "提交",
     "Type": "类型",
     "Bot Url": "机器人地址",
-    "Create Time": "创建日期",
+    "Create Time": "创建时间",
     "Operation": "操作",
     "Check": "检测",
     "View": "查看"

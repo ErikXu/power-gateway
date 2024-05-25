@@ -78,14 +78,16 @@ export default {
     "Create": "Create",
     "Key": "Key",
     "From Key": "From Key",
-    "Mapping": "Mapping"
+    "Mapping": "Mapping",
+    "Create Time": "Create Time"
   },
   "zh": {
     "Field Projection": "字段映射",
     "Create": "创建",
     "Key": "字段",
     "From Key": "源字段",
-    "Mapping": "映射表"
+    "Mapping": "映射表",
+    "Create Time": "创建时间"
   }
 }
 </i18n>

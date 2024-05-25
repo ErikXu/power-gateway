@@ -189,7 +189,7 @@ export default {
     "Rule": "规则",
     "Reset": "重置",
     "Submit": "提交",
-    "Create Time": "创建日期"
+    "Create Time": "创建时间"
   }
 }
 </i18n>
