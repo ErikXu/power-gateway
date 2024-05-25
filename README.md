@@ -97,3 +97,18 @@ curl -X 'POST' \
 ]
 '
 ```
+
+## Test Data
+
+```
+db.getCollection('FieldProjection').insert({
+    "_id" : ObjectId("66523d0c3421a4f9ae769ebf"),
+    "createAt" : ISODate("2024-05-25T18:39:09.105Z"),
+    "name" : "应用名称",
+    "key" : "appName",
+    "fromKey" : "appId",
+    "mappings": {
+        "foo": "bar"
+    }
+});
+```
