@@ -1,7 +1,5 @@
-using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using RestSharp;
-using ZstdSharp.Unsafe;
 
 namespace WebApi.Services
 {
@@ -10,6 +8,8 @@ namespace WebApi.Services
         public Task SendLarkTextMsg(string url, LarkTextMsgRequest larkTextMsgRequest);
 
         public Task SendLarkPostMsg(string url, LarkPostMsgRequest larkPostMsgRequest);
+
+        public Task SendTestMsg(string url, string title, string message);
     }
 
     public class LarkService : ILarkService
@@ -55,6 +55,36 @@ namespace WebApi.Services
             {
                 _logger.LogError(ex, "发送飞书通知失败");
             }
+        }
+
+        public async Task SendTestMsg(string url, string title, string message)
+        {
+            var larkPostMsgRequest = new LarkPostMsgRequest
+            {
+                Content = new LarkPostMsgContent
+                {
+                    Post = new LarkPostMsgContentPost
+                    {
+                        EnUs = new LarkPostMsgContentEnUs
+                        {
+                            Title = title,
+                            Content = new List<List<LarkPostMsgContentItem>>
+                            {
+                                new List<LarkPostMsgContentItem>
+                                {
+                                    new LarkPostMsgContentItem
+                                    {
+                                        Tag = "text",
+                                        Text = message
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            await SendLarkPostMsg(url, larkPostMsgRequest);
         }
     }
 

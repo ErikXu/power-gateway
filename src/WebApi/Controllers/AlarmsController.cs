@@ -1,10 +1,10 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Models;
 using WebApi.Mongo.Entities;
 using WebApi.Mongo;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using WebApi.Services;
 
 namespace WebApi.Controllers
 {
@@ -13,10 +13,12 @@ namespace WebApi.Controllers
     public class AlarmsController : ControllerBase
     {
         private readonly MongoDbContext _mongoDbContext;
+        private readonly ILarkService _larkService;
 
-        public AlarmsController(MongoDbContext mongoDbContext)
+        public AlarmsController(MongoDbContext mongoDbContext, ILarkService larkService)
         {
             _mongoDbContext = mongoDbContext;
+            _larkService = larkService;
         }
 
         [HttpPost("configs")]
@@ -37,8 +39,33 @@ namespace WebApi.Controllers
         [HttpGet("configs")]
         public IActionResult GetConfigs()
         {
-            var configs = _mongoDbContext.Collection<AlarmConfig>().AsQueryable().OrderByDescending(n => n.CreateAt).ToList();
+            var configs = _mongoDbContext.Collection<AlarmConfig>()
+                                         .AsQueryable()
+                                         .OrderByDescending(n => n.CreateAt)
+                                         .Select(n => new AlarmConfigItem
+                                         {
+                                             Id = n.Id.ToString(),
+                                             Name = n.Name,
+                                             Type = n.Type,
+                                             BotUrl = n.BotUrl,
+                                             CreateAt = n.CreateAt
+                                         })
+                                         .ToList();
             return Ok(configs);
+        }
+
+        [HttpGet("configs/{id}/check")]
+        public async Task<IActionResult> CheckConfig([FromRoute] string id)
+        {
+            var config = _mongoDbContext.Collection<AlarmConfig>().AsQueryable().SingleOrDefault(n => n.Id == new ObjectId(id));
+            if (config == null)
+            {
+                return BadRequest();
+            }
+
+            await _larkService.SendTestMsg(config.BotUrl, $"[{config.Name}]的告警标题", $"[{config.Name}]的告警内容");
+
+            return Ok();
         }
 
         [HttpPost("rules")]
@@ -89,7 +116,7 @@ namespace WebApi.Controllers
         {
             var options = new List<KeyValueItem<string, string>>()
             {
-                new KeyValueItem<string, string>{Key = "status", Value = "Http Status"}
+                new KeyValueItem<string, string>{Key = "status", Value = "status"}
             };
 
             return Ok(options);
@@ -100,7 +127,7 @@ namespace WebApi.Controllers
         {
             var options = new List<KeyValueItem<string, string>>()
             {
-                new KeyValueItem<string, string>{Key = "==", Value = "Equals"}
+                new KeyValueItem<string, string>{Key = "==", Value = "=="}
             };
 
             return Ok(options);

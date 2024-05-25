@@ -15,6 +15,13 @@ export function createAlarmConfig(form) {
   })
 }
 
+export function checkAlarmConfig(id) {
+  return request({
+    url: `/api/alarms/configs/${id}/check`,
+    method: 'get'
+  })
+}
+
 export function getAlarmRules() {
   return request({
     url: '/api/alarms/rules',

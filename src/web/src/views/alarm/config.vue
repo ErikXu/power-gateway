@@ -29,12 +29,21 @@
       </el-table-column>
       <el-table-column :label="$t('Bot Url')" align="left">
         <template slot-scope="{row}">
-          <span>{{ row.botUrl }}</span>
+          <el-tooltip class="item" effect="light" :content="row.botUrl" placement="top">
+            <el-link type="primary">{{ $t('View') }}</el-link>
+          </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('Create Time')" align="left">
+      <el-table-column :label="$t('Create Time')" align="left" width="160">
         <template slot-scope="{row}">
           <span>{{ row.createAt | simpleFormat }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('Operation')" align="center" width="80">
+        <template slot-scope="{row}">
+          <el-button type="success" size="mini" @click="check(row)">
+            {{ $t('Check') }}
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -61,7 +70,7 @@
 
 <script>
 
-import { getAlarmConfig, createAlarmConfig } from '@/api/alarm'
+import { getAlarmConfig, createAlarmConfig, checkAlarmConfig } from '@/api/alarm'
 
 export default {
   data() {
@@ -93,6 +102,14 @@ export default {
       this.submiting = false
       this.formVisible = true
     },
+    check(row) {
+      checkAlarmConfig(row.id).then(response => {
+        this.$message({
+          type: 'success',
+          message: 'Success!'
+        })
+      })
+    },
     submit() {
       this.$refs.configForm.validate(valid => {
         if (valid) {
@@ -100,7 +117,7 @@ export default {
           createAlarmConfig(this.form).then(() => {
             this.$message({
               type: 'success',
-              message: 'Submit success!'
+              message: 'Success!'
             })
             this.fetchData()
             this.formVisible = false
@@ -128,7 +145,10 @@ export default {
     "Submit": "Submit",
     "Type": "Type",
     "Bot Url": "Bot Url",
-    "Create Time": "Create Time"
+    "Create Time": "Create Time",
+    "Operation": "Operation",
+    "Check": "Check",
+    "View": "View"
   },
   "zh": {
     "Alarm Config": "告警配置",
@@ -138,7 +158,10 @@ export default {
     "Submit": "提交",
     "Type": "类型",
     "Bot Url": "机器人地址",
-    "Create Time": "创建日期"
+    "Create Time": "创建日期",
+    "Operation": "操作",
+    "Check": "检测",
+    "View": "查看"
   }
 }
 </i18n>
