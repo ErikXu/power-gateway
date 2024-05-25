@@ -14,3 +14,39 @@ export function createAlarmConfig(form) {
     data: form
   })
 }
+
+export function getAlarmRules() {
+  return request({
+    url: '/api/alarms/rules',
+    method: 'get'
+  })
+}
+
+export function createAlarmRule(form) {
+  return request({
+    url: '/api/alarms/rules',
+    method: 'post',
+    data: form
+  })
+}
+
+export function getFieldOptions() {
+  return request({
+    url: '/api/alarms/option/fields',
+    method: 'get'
+  })
+}
+
+export function getOperatorOptions() {
+  return request({
+    url: '/api/alarms/option/operators',
+    method: 'get'
+  })
+}
+
+export function getConfigOptions() {
+  return request({
+    url: '/api/alarms/option/configs',
+    method: 'get'
+  })
+}

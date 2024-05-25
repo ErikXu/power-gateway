@@ -98,11 +98,15 @@ export default {
 {
   "en": {
     "Request Log": "Request Log",
-    "Alarm Config": "Alarm Config"
+    "Alarm": "Alarm",
+    "Alarm Config": "Alarm Config",
+    "Alarm Rule": "Alarm Rule"
   },
   "zh": {
     "Request Log": "请求日志",
-    "Alarm Config": "告警配置"
+    "Alarm": "告警",
+    "Alarm Config": "告警配置",
+    "Alarm Rule": "告警规则"
   }
 }
 </i18n>

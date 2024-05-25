@@ -65,12 +65,20 @@ export const constantRoutes = [
   {
     path: '/alarm',
     component: Layout,
+    name: 'alarm',
+    meta: { title: 'Alarm', icon: 'el-icon-folder' },
     children: [
       {
         path: 'config',
         name: 'config',
         component: () => import('@/views/alarm/config'),
         meta: { title: 'Alarm Config', icon: 'el-icon-document' }
+      },
+      {
+        path: 'rule',
+        name: 'rule',
+        component: () => import('@/views/alarm/rule'),
+        meta: { title: 'Alarm Rule', icon: 'el-icon-document' }
       }]
   },
 

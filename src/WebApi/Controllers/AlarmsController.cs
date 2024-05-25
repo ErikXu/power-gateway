@@ -26,8 +26,7 @@ namespace WebApi.Controllers
             {
                 Name = form.Name,
                 Type = form.Type,
-                BotUrl = form.BotUrl,
-                CreateAt = DateTime.UtcNow
+                BotUrl = form.BotUrl
             };
 
             await _mongoDbContext.Collection<AlarmConfig>().InsertOneAsync(config);
@@ -51,12 +50,71 @@ namespace WebApi.Controllers
                 Field = form.Field,
                 Operator = form.Operator,
                 Value = form.Value,
-                //AlarmConfigId = new ObjectId(form.AlarmConfigId)
+                AlarmConfigId = new ObjectId(form.AlarmConfigId)
             };
 
             await _mongoDbContext.Collection<AlarmRule>().InsertOneAsync(rule);
 
             return Ok();
+        }
+
+        [HttpGet("rules")]
+        public IActionResult GetRules()
+        {
+            var configDic = _mongoDbContext.Collection<AlarmConfig>()
+                                           .AsQueryable()
+                                           .ToList()
+                                           .ToDictionary(key => key.Id, val => val.Name);
+
+            var rules = _mongoDbContext.Collection<AlarmRule>()
+                                       .AsQueryable()
+                                       .OrderByDescending(n => n.CreateAt)
+                                       .ToList()
+                                       .Select(n => new AlarmRuleItem
+                                       {
+                                           Id = n.Id.ToString(),
+                                           Title = n.Title,
+                                           Field = n.Field,
+                                           Operator = n.Operator,
+                                           Value = n.Value,
+                                           AlarmConfigId = n.AlarmConfigId.ToString(),
+                                           AlarmConfigText = configDic[n.AlarmConfigId],
+                                           CreateAt = n.CreateAt
+                                       }).ToList();
+            return Ok(rules);
+        }
+
+        [HttpGet("option/fields")]
+        public IActionResult GetFieldOptions()
+        {
+            var options = new List<KeyValueItem<string, string>>()
+            {
+                new KeyValueItem<string, string>{Key = "status", Value = "Http Status"}
+            };
+
+            return Ok(options);
+        }
+
+        [HttpGet("option/operators")]
+        public IActionResult GetOperatorOptions()
+        {
+            var options = new List<KeyValueItem<string, string>>()
+            {
+                new KeyValueItem<string, string>{Key = "==", Value = "Equals"}
+            };
+
+            return Ok(options);
+        }
+
+        [HttpGet("option/configs")]
+        public IActionResult GetConfigOptions()
+        {
+            var options = _mongoDbContext.Collection<AlarmConfig>()
+                                         .AsQueryable()
+                                         .Select(n => new KeyValueItem<string, string> { Key = n.Id.ToString(), Value = n.Name })
+                                         .ToList();
+
+            return Ok(options);
         }
     }
 }

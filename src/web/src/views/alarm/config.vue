@@ -44,10 +44,10 @@
         <el-form-item :label="$t('Name')" prop="name">
           <el-input v-model="form.name" autocomplete="off" />
         </el-form-item>
-        <el-form-item :label="$t('Type')" prop="name">
+        <el-form-item :label="$t('Type')" prop="type">
           <el-input v-model="form.type" autocomplete="off" />
         </el-form-item>
-        <el-form-item :label="$t('Bot Url')" prop="name">
+        <el-form-item :label="$t('Bot Url')" prop="botUrl">
           <el-input v-model="form.botUrl" autocomplete="off" />
         </el-form-item>
       </el-form>
@@ -64,7 +64,6 @@
 import { getAlarmConfig, createAlarmConfig } from '@/api/alarm'
 
 export default {
-  name: 'Task',
   data() {
     return {
       list: [],

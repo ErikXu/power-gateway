@@ -17,8 +17,8 @@ namespace WebApi.Mongo.Entities
         [BsonElement("value")]
         public string Value { get; set; }
 
-        //[BsonElement("alarmConfigId")]
-        //public ObjectId AlarmConfigId { get; set; }
+        [BsonElement("alarmConfigId")]
+        public ObjectId AlarmConfigId { get; set; }
     }
 }
 

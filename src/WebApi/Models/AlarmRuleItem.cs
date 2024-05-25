@@ -1,7 +1,9 @@
-namespace WebApi.Models
+﻿namespace WebApi.Models
 {
-    public class AlarmRuleForm
+    public class AlarmRuleItem
     {
+        public string Id { get; set; }
+
         public string Title { get; set; }
 
         public string Field { get; set; }
@@ -11,6 +13,9 @@ namespace WebApi.Models
         public string Value { get; set; }
 
         public string AlarmConfigId { get; set; }
+
+        public string AlarmConfigText { get; set; }
+
+        public DateTime CreateAt { get; set; }
     }
 }
-

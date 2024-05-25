@@ -83,13 +83,17 @@ export default {
     "Home": "Home",
     "Request Log": "Request Log",
     "Request Log Detail": "Request Log Detail",
-    "Alarm Config": "Alarm Config"
+    "Alarm": "Alarm",
+    "Alarm Config": "Alarm Config",
+    "Alarm Rule": "Alarm Rule"
   },
   "zh": {
     "Home": "主页",
     "Request Log": "请求日志",
     "Request Log Detail": "请求日志详情",
-    "Alarm Config": "告警配置"
+    "Alarm": "告警",
+    "Alarm Config": "告警配置",
+    "Alarm Rule": "告警规则"
   }
 }
 </i18n>
