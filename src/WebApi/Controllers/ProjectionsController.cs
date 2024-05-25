@@ -1,9 +1,9 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Mongo.Entities;
 using WebApi.Mongo;
 using WebApi.Models;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using MongoDB.Driver;
+using Newtonsoft.Json;
 
 namespace WebApi.Controllers
 {
@@ -29,9 +29,30 @@ namespace WebApi.Controllers
                 Mappings = form.Mappings
             };
 
-            await _mongoDbContext.Collection< FieldProjection>().InsertOneAsync(projection);
+            await _mongoDbContext.Collection<FieldProjection>().InsertOneAsync(projection);
 
             return Ok();
+        }
+
+        [HttpGet]
+        public IActionResult List()
+        {
+            var list = _mongoDbContext.Collection<FieldProjection>()
+                                         .AsQueryable()
+                                         .OrderByDescending(n => n.CreateAt)
+                                         .ToList()
+                                         .Select(n => new FieldProjectionItem
+                                         {
+                                             Id = n.Id.ToString(),
+                                             Name = n.Name,
+                                             Key = n.Key,
+                                             FromKey = n.FromKey,
+                                             Mappings = n.Mappings,
+                                             MappingText = JsonConvert.SerializeObject(n.Mappings, Formatting.Indented),
+                                             CreateAt = n.CreateAt
+                                         })
+                                         .ToList();
+            return Ok(list);
         }
     }
 }

@@ -100,13 +100,17 @@ export default {
     "Request Log": "Request Log",
     "Alarm": "Alarm",
     "Alarm Config": "Alarm Config",
-    "Alarm Rule": "Alarm Rule"
+    "Alarm Rule": "Alarm Rule",
+    "Setting": "Setting",
+    "Field Projection": "Field Projection"
   },
   "zh": {
     "Request Log": "请求日志",
     "Alarm": "告警",
     "Alarm Config": "告警配置",
-    "Alarm Rule": "告警规则"
+    "Alarm Rule": "告警规则",
+    "Setting": "设置",
+    "Field Projection": "字段映射"
   }
 }
 </i18n>

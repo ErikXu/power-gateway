@@ -85,7 +85,9 @@ export default {
     "Request Log Detail": "Request Log Detail",
     "Alarm": "Alarm",
     "Alarm Config": "Alarm Config",
-    "Alarm Rule": "Alarm Rule"
+    "Alarm Rule": "Alarm Rule",
+    "Setting": "Setting",
+    "Field Projection": "Field Projection"
   },
   "zh": {
     "Home": "主页",
@@ -93,7 +95,9 @@ export default {
     "Request Log Detail": "请求日志详情",
     "Alarm": "告警",
     "Alarm Config": "告警配置",
-    "Alarm Rule": "告警规则"
+    "Alarm Rule": "告警规则",
+    "Setting": "设置",
+    "Field Projection": "字段映射"
   }
 }
 </i18n>

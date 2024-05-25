@@ -62,6 +62,7 @@ export const constantRoutes = [
         hidden: true
       }]
   },
+
   {
     path: '/alarm',
     component: Layout,
@@ -79,6 +80,20 @@ export const constantRoutes = [
         name: 'rule',
         component: () => import('@/views/alarm/rule'),
         meta: { title: 'Alarm Rule', icon: 'el-icon-document' }
+      }]
+  },
+
+  {
+    path: '/setting',
+    component: Layout,
+    name: 'setting',
+    meta: { title: 'Setting', icon: 'el-icon-folder' },
+    children: [
+      {
+        path: 'projection',
+        name: 'projection',
+        component: () => import('@/views/setting/projection'),
+        meta: { title: 'Field Projection', icon: 'el-icon-document' }
       }]
   },
 
