@@ -32,7 +32,7 @@ namespace WebApi.Mongo.Entities
         public double LatencyMax { get; set; }
     }
 
-    public class Qps24Hour: Qps
+    public class Qps1Day: Qps
     {
 
     }

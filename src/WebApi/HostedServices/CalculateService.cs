@@ -41,7 +41,10 @@ namespace WebApi.HostedServices
 
             CalculateQps1Munite(now, basicSetting);
             CalculateQps1Hour(now, basicSetting);
-            CalculateQps24Hour(now, basicSetting);
+            CalculateQps1Day(now, basicSetting);
+
+            CalculateIpRequest1Munite(now);
+            CalculateIpRequest1Hour(now);
         }
 
         private void CalculateQps1Munite(DateTime now, BasicSetting basicSetting)
@@ -152,12 +155,12 @@ namespace WebApi.HostedServices
             _mongoDbContext.Collection<Qps1Hour>().InsertOne(qps1Hour);
         }
 
-        private void CalculateQps24Hour(DateTime now, BasicSetting basicSetting)
+        private void CalculateQps1Day(DateTime now, BasicSetting basicSetting)
         {
             var endTime = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0, DateTimeKind.Utc);
 
-            var qps24Hour = _mongoDbContext.Collection<Qps24Hour>().AsQueryable().SingleOrDefault(n => n.Time == endTime);
-            if (qps24Hour != null)
+            var qps1Day = _mongoDbContext.Collection<Qps1Day>().AsQueryable().SingleOrDefault(n => n.Time == endTime);
+            if (qps1Day != null)
             {
                 return;
             }
@@ -174,7 +177,7 @@ namespace WebApi.HostedServices
 
             if (logs.Count <= 0)
             {
-                qps24Hour = new Qps24Hour
+                qps1Day = new Qps1Day
                 {
                     Time = endTime,
                     Text = endTime.ToLocalTime().ToString("yyyy-MM-dd"),
@@ -189,7 +192,7 @@ namespace WebApi.HostedServices
             }
             else
             {
-                qps24Hour = new Qps24Hour
+                qps1Day = new Qps1Day
                 {
                     Time = endTime,
                     Text = endTime.ToLocalTime().ToString("yyyy-MM-dd"),
@@ -203,7 +206,98 @@ namespace WebApi.HostedServices
                 };
             }
 
-            _mongoDbContext.Collection<Qps24Hour>().InsertOne(qps24Hour);
+            _mongoDbContext.Collection<Qps1Day>().InsertOne(qps1Day);
+        }
+
+        private void CalculateIpRequest1Munite(DateTime now)
+        {
+            var endTime = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0, DateTimeKind.Utc);
+            var startTime = endTime.AddMinutes(-1);
+
+            var endTimestamp = new DateTimeOffset(endTime).Millisecond;
+            var startTimestamp = new DateTimeOffset(startTime).Millisecond;
+
+            var logs = _mongoDbContext.Collection<ApisixLogRequest>().AsQueryable()
+                                      .Where(n => n.StartTime >= endTimestamp && n.StartTime < startTimestamp)
+                                      .Select(n => new { n.ClientIp, n.StartTime })
+                                      .ToList();
+
+            if (logs.Count <= 0)
+            {
+                return;
+            }
+            else
+            {
+                var dic = new Dictionary<string, int>();
+                foreach (var log in logs)
+                {
+                    if (dic.ContainsKey(log.ClientIp))
+                    {
+                        dic[log.ClientIp] = dic[log.ClientIp] + 1;
+                    }
+                    else
+                    {
+                        dic[log.ClientIp] = 1;
+                    }
+                }
+
+                var ipRequest1Munite = dic.Select(n => new IpRequest1Munite
+                {
+                    Time = endTime,
+                    Text = endTime.ToLocalTime().ToString("HH:mm"),
+                    Ip = n.Key,
+                    Count = n.Value,
+                    CreateAt = DateTime.UtcNow
+                }).ToList();
+
+                _mongoDbContext.Collection<IpRequest1Munite>().InsertMany(ipRequest1Munite);
+            }
+        }
+
+        private void CalculateIpRequest1Hour(DateTime now)
+        {
+            var endTime = new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0, DateTimeKind.Utc);
+            var startTime = endTime.AddHours(-1);
+
+            var endTimestamp = new DateTimeOffset(endTime).Millisecond;
+            var startTimestamp = new DateTimeOffset(startTime).Millisecond;
+
+
+            var logs = _mongoDbContext.Collection<ApisixLogRequest>().AsQueryable()
+                                      .Where(n => n.StartTime >= endTimestamp && n.StartTime < startTimestamp)
+                                      .Select(n => new { n.ClientIp, n.StartTime })
+                                      .ToList();
+
+            if (logs.Count <= 0)
+            {
+                return;
+            }
+            else
+            {
+                var dic = new Dictionary<string, int>();
+                foreach (var log in logs)
+                {
+                    if (dic.ContainsKey(log.ClientIp))
+                    {
+                        dic[log.ClientIp] = dic[log.ClientIp] + 1;
+                    }
+                    else
+                    {
+                        dic[log.ClientIp] = 1;
+                    }
+                }
+
+                var ipRequest1Hour = dic.Select(n => new IpRequest1Hour
+                {
+                    Time = endTime,
+                    Text = endTime.ToLocalTime().ToString("MM-dd HH"),
+                    Ip = n.Key,
+                    Count = n.Value,
+                    CreateAt = DateTime.UtcNow
+                }).ToList();
+
+                _mongoDbContext.Collection<IpRequest1Hour>().InsertMany(ipRequest1Hour);
+            }
         }
 
         public Task StopAsync(CancellationToken cancellationToken)

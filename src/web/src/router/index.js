@@ -64,6 +64,26 @@ export const constantRoutes = [
   },
 
   {
+    path: '/ip-request',
+    component: Layout,
+    name: 'ip-request',
+    meta: { title: 'Ip Request', icon: 'el-icon-folder' },
+    children: [
+      {
+        path: '1m',
+        name: 'ip-request-1m',
+        component: () => import('@/views/request/ip/munite'),
+        meta: { title: 'Ip Request 1 Munite', icon: 'el-icon-document' }
+      },
+      {
+        path: '1h',
+        name: 'ip-request-1h',
+        component: () => import('@/views/request/ip/hour'),
+        meta: { title: 'Ip Request 1 Hour', icon: 'el-icon-document' }
+      }]
+  },
+
+  {
     path: '/alarm',
     component: Layout,
     name: 'alarm',

@@ -103,7 +103,10 @@ export default {
     "Alarm Rule": "Alarm Rule",
     "Setting": "Setting",
     "Basic Setting": "Basic Setting",
-    "Field Projection": "Field Projection"
+    "Field Projection": "Field Projection",
+    "Ip Request": "Ip Request",
+    "Ip Request 1 Munite": "Ip Request 1 Munite",
+    "Ip Request 1 Hour": "Ip Request 1 Hour"
   },
   "zh": {
     "Request Log": "请求日志",
@@ -112,7 +115,10 @@ export default {
     "Alarm Rule": "告警规则",
     "Setting": "设置",
     "Basic Setting": "基础设置",
-    "Field Projection": "字段映射"
+    "Field Projection": "字段映射",
+    "Ip Request": "Ip 请求",
+    "Ip Request 1 Munite": "每分钟 Ip 请求",
+    "Ip Request 1 Hour": "每小时 Ip 请求"
   }
 }
 </i18n>

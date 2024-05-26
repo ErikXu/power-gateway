@@ -111,7 +111,7 @@ namespace WebApi.Controllers
 
             var query = _mongoDbContext.Collection<ApisixLogRequest>().AsQueryable();
 
-            var logs = query.OrderBy(n => n.StartTime).OrderByDescending(n => n.Id).Skip((pageIndex.Value - 1) * pageSize.Value).Take(pageSize.Value).ToList();
+            var logs = query.OrderByDescending(n => n.StartTime).Skip((pageIndex.Value - 1) * pageSize.Value).Take(pageSize.Value).ToList();
 
             var list = logs.Select(n => new ApisixLogItem
             {
