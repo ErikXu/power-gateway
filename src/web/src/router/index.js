@@ -90,6 +90,12 @@ export const constantRoutes = [
     meta: { title: 'Setting', icon: 'el-icon-folder' },
     children: [
       {
+        path: 'basic',
+        name: 'basic',
+        component: () => import('@/views/setting/basic'),
+        meta: { title: 'Basic Setting', icon: 'el-icon-document' }
+      },
+      {
         path: 'projection',
         name: 'projection',
         component: () => import('@/views/setting/projection'),

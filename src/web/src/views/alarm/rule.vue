@@ -98,6 +98,7 @@ export default {
       operatorList: [],
       configList: [],
       formVisible: false,
+      submiting: false,
       form: {
         title: '',
         field: '',

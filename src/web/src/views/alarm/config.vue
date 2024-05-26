@@ -77,6 +77,7 @@ export default {
     return {
       list: [],
       formVisible: false,
+      submiting: false,
       form: {
         name: '',
         type: 'lark',

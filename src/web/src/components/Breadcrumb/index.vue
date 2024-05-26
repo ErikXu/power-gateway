@@ -87,6 +87,7 @@ export default {
     "Alarm Config": "Alarm Config",
     "Alarm Rule": "Alarm Rule",
     "Setting": "Setting",
+    "Basic Setting": "Basic Setting",
     "Field Projection": "Field Projection"
   },
   "zh": {
@@ -97,6 +98,7 @@ export default {
     "Alarm Config": "告警配置",
     "Alarm Rule": "告警规则",
     "Setting": "设置",
+    "Basic Setting": "基础设置",
     "Field Projection": "字段映射"
   }
 }

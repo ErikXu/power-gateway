@@ -31,20 +31,20 @@ namespace WebApi.HostedServices
 
         private void DoWork(object state)
         {
-            var latencySetting = _mongoDbContext.Collection<LatencySetting>().AsQueryable().FirstOrDefault(n => n.Id == ObjectId.Empty);
-            if (latencySetting == null)
+            var basicSetting = _mongoDbContext.Collection<BasicSetting>().AsQueryable().FirstOrDefault(n => n.Id == ObjectId.Empty);
+            if (basicSetting == null)
             {
                 return;
             }
 
             var now = DateTime.UtcNow;
 
-            CalculateQps1Munite(now, latencySetting);
-            CalculateQps1Hour(now, latencySetting);
-            CalculateQps24Hour(now, latencySetting);
+            CalculateQps1Munite(now, basicSetting);
+            CalculateQps1Hour(now, basicSetting);
+            CalculateQps24Hour(now, basicSetting);
         }
 
-        private void CalculateQps1Munite(DateTime now, LatencySetting latencySetting)
+        private void CalculateQps1Munite(DateTime now, BasicSetting basicSetting)
         {
             var endTime = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0, DateTimeKind.Utc);
 
@@ -72,7 +72,7 @@ namespace WebApi.HostedServices
                     Text = endTime.ToLocalTime().ToString("HH:mm"),
                     Total = 0,
                     Value = 0,
-                    LatencyBenchmark = latencySetting.Latency,
+                    LatencyBenchmark = basicSetting.Latency,
                     LowPerformanceCount = 0,
                     LatencyAvg = 0,
                     LatencyMax = 0,
@@ -87,8 +87,8 @@ namespace WebApi.HostedServices
                     Text = endTime.ToLocalTime().ToString("HH:mm"),
                     Total = logs.Count,
                     Value = logs.Count / 60,
-                    LatencyBenchmark = latencySetting.Latency,
-                    LowPerformanceCount = logs.Where(n => n.Latency > latencySetting.Latency).Count(),
+                    LatencyBenchmark = basicSetting.Latency,
+                    LowPerformanceCount = logs.Where(n => n.Latency > basicSetting.Latency).Count(),
                     LatencyAvg = logs.Sum(n => n.Latency) / logs.Count,
                     LatencyMin = logs.Min(n => n.Latency),
                     LatencyMax = logs.Max(n => n.Latency)
@@ -98,7 +98,7 @@ namespace WebApi.HostedServices
             _mongoDbContext.Collection<Qps1Munite>().InsertOne(qps1Munite);
         }
 
-        private void CalculateQps1Hour(DateTime now, LatencySetting latencySetting)
+        private void CalculateQps1Hour(DateTime now, BasicSetting basicSetting)
         {
             var endTime = new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0, DateTimeKind.Utc);
 
@@ -126,7 +126,7 @@ namespace WebApi.HostedServices
                     Text = endTime.ToLocalTime().ToString("MM-dd HH"),
                     Total = 0,
                     Value = 0,
-                    LatencyBenchmark = latencySetting.Latency,
+                    LatencyBenchmark = basicSetting.Latency,
                     LowPerformanceCount = 0,
                     LatencyAvg = 0,
                     LatencyMax = 0,
@@ -141,8 +141,8 @@ namespace WebApi.HostedServices
                     Text = endTime.ToLocalTime().ToString("MM-dd HH"),
                     Total = logs.Count,
                     Value = logs.Count / 60 / 60,
-                    LatencyBenchmark = latencySetting.Latency,
-                    LowPerformanceCount = logs.Where(n => n.Latency > latencySetting.Latency).Count(),
+                    LatencyBenchmark = basicSetting.Latency,
+                    LowPerformanceCount = logs.Where(n => n.Latency > basicSetting.Latency).Count(),
                     LatencyAvg = logs.Sum(n => n.Latency) / logs.Count,
                     LatencyMin = logs.Min(n => n.Latency),
                     LatencyMax = logs.Max(n => n.Latency)
@@ -152,7 +152,7 @@ namespace WebApi.HostedServices
             _mongoDbContext.Collection<Qps1Hour>().InsertOne(qps1Hour);
         }
 
-        private void CalculateQps24Hour(DateTime now, LatencySetting latencySetting)
+        private void CalculateQps24Hour(DateTime now, BasicSetting basicSetting)
         {
             var endTime = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0, DateTimeKind.Utc);
 
@@ -180,7 +180,7 @@ namespace WebApi.HostedServices
                     Text = endTime.ToLocalTime().ToString("yyyy-MM-dd"),
                     Total = 0,
                     Value = 0,
-                    LatencyBenchmark = latencySetting.Latency,
+                    LatencyBenchmark = basicSetting.Latency,
                     LowPerformanceCount = 0,
                     LatencyAvg = 0,
                     LatencyMax = 0,
@@ -195,8 +195,8 @@ namespace WebApi.HostedServices
                     Text = endTime.ToLocalTime().ToString("yyyy-MM-dd"),
                     Total = logs.Count,
                     Value = logs.Count / 24 / 60 / 60,
-                    LatencyBenchmark = latencySetting.Latency,
-                    LowPerformanceCount = logs.Where(n => n.Latency > latencySetting.Latency).Count(),
+                    LatencyBenchmark = basicSetting.Latency,
+                    LowPerformanceCount = logs.Where(n => n.Latency > basicSetting.Latency).Count(),
                     LatencyAvg = logs.Sum(n => n.Latency) / logs.Count,
                     LatencyMin = logs.Min(n => n.Latency),
                     LatencyMax = logs.Max(n => n.Latency)

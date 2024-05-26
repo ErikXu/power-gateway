@@ -6,7 +6,6 @@ using WebApi.Models;
 using WebApi.Mongo;
 using WebApi.Mongo.Entities;
 using MongoDB.Driver.Linq;
-using DnsClient.Protocol;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.Extensions.Caching.Memory;
 using DynamicExpresso;
