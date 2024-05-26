@@ -85,6 +85,30 @@
         </template>
       </el-table-column>
     </el-table>
+    <h5>{{ $t('Field Projection') }}</h5>
+    <el-table
+      :data="detail.projection || []"
+      border
+      fit
+      highlight-current-row
+      style="margin-top:10px;"
+    >
+      <el-table-column label="#" align="center" width="55">
+        <template slot-scope="scope">
+          {{ scope.$index + 1 }}
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('Key')" align="left" width="240">
+        <template slot-scope="{row}">
+          <span>{{ row.key }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('Value')" align="left">
+        <template slot-scope="{row}">
+          <span>{{ row.value }}</span>
+        </template>
+      </el-table-column>
+    </el-table>
     <h5>{{ $t('Query String') }}</h5>
     <el-table
       :data="detail.queryStrings"
@@ -188,6 +212,7 @@ export default {
     "Request": "Request",
     "Request Header": "Request Header",
     "Jwt Token": "Jwt Token",
+    "Field Projection": "Field Projection",
     "Query String": "Query String",
     "Request Body": "Request Body",
     "Response": "Response",
@@ -211,6 +236,7 @@ export default {
     "Request": "请求信息",
     "Request Header": "请求头",
     "Jwt Token": "Jwt 信息",
+    "Field Projection": "字段映射",
     "Query String": "请求参数",
     "Request Body": "请求体",
     "Response": "响应",

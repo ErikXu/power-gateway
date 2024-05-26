@@ -160,6 +160,11 @@ namespace WebApi.Controllers
                     Key = n.Key,
                     Value = n.Value
                 }).OrderBy(n => n.Key).ToList(),
+                Projection = log.Request?.Projection?.Select(n => new KeyValueItem<string, string>
+                {
+                    Key = n.Key,
+                    Value = n.Value
+                }).OrderBy(n => n.Key).ToList(),
                 QueryStrings = log.Request.QueryString.Select(n => new KeyValueItem<string, string>
                 {
                     Key = n.Key,

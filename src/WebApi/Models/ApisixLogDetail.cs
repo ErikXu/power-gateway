@@ -22,6 +22,8 @@
 
         public List<KeyValueItem<string, string>> Jwt { get; set; }
 
+        public List<KeyValueItem<string, string>> Projection { get; set; }
+
         public List<KeyValueItem<string, string>> QueryStrings { get; set; }
 
         public string RequestBody { get; set; }
