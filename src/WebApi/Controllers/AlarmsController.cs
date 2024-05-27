@@ -116,7 +116,11 @@ namespace WebApi.Controllers
         {
             var options = new List<KeyValueItem<string, string>>()
             {
-                new KeyValueItem<string, string>{Key = "status", Value = "status"}
+                new KeyValueItem<string, string>
+                { 
+                    Key = "status", 
+                    Value = "status" 
+                }
             };
 
             return Ok(options);
@@ -127,7 +131,11 @@ namespace WebApi.Controllers
         {
             var options = new List<KeyValueItem<string, string>>()
             {
-                new KeyValueItem<string, string>{Key = "==", Value = "=="}
+                new KeyValueItem<string, string>
+                { 
+                    Key = "==", 
+                    Value = "==" 
+                }
             };
 
             return Ok(options);
