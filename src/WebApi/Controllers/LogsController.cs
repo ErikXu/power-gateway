@@ -55,7 +55,7 @@ namespace WebApi.Controllers
 
                             foreach (var projection in projectionList)
                             {
-                                if (request.Request.Jwt.ContainsKey(projection.FromKey) && 
+                                if (request.Request.Jwt.ContainsKey(projection.FromKey) &&
                                     projection.Mappings.ContainsKey(request.Request.Jwt[projection.FromKey]))
                                 {
                                     request.Request.Projection[projection.Key] = projection.Mappings[request.Request.Jwt[projection.FromKey]];
@@ -148,7 +148,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("apisix/{id}")]
-        public async Task<IActionResult> GetApisixLog(string id)
+        public async Task<IActionResult> GetApisixLog([FromRoute] string id)
         {
             var log = await _mongoDbContext.Collection<ApisixLogRequest>().Find(n => n.Id == new ObjectId(id)).SingleOrDefaultAsync();
             var detail = new ApisixLogDetail
@@ -196,6 +196,54 @@ namespace WebApi.Controllers
             }
 
             return Ok(detail);
+        }
+
+        [HttpGet("apisix/user/{userId}")]
+        public IActionResult GetUserApisixLog([FromRoute] string userId, [FromQuery] int? pageIndex, [FromQuery] int? pageSize)
+        {
+            var setting = _memoryCache.Get<BasicSetting>(Program.BasicSettingKey);
+            if (setting == null || string.IsNullOrWhiteSpace(setting.UserIdField))
+            {
+                return BadRequest();
+            }
+
+            if (pageIndex == null || pageIndex.Value <= 0)
+            {
+                pageIndex = 1;
+            }
+
+            if (pageSize == null || pageSize.Value <= 0)
+            {
+                pageSize = 1;
+            }
+
+            var query = _mongoDbContext.Collection<ApisixLogRequest>().AsQueryable();
+
+            var logs = query.Where(n => n.Request.Jwt != null)
+                            .Where(n => n.Request.Jwt.ContainsKey(setting.UserIdField))
+                            .Where(n => n.Request.Jwt[setting.UserIdField] == userId)
+                            .OrderByDescending(n => n.StartTime).Skip((pageIndex.Value - 1) * pageSize.Value).Take(pageSize.Value).ToList();
+
+            var list = logs.Select(n => new ApisixLogItem
+            {
+                Id = n.Id.ToString(),
+                Method = n.Request.Method,
+                Url = n.Request.Url,
+                Upstream = n.Upstream,
+                Status = n.Response.Status,
+                Latency = n.Latency,
+                StartTime = DateTimeOffset.FromUnixTimeMilliseconds(n.StartTime).UtcDateTime
+            });
+
+            var result = new PagingResult<ApisixLogItem>
+            {
+                PageIndex = pageIndex.Value,
+                PageSize = pageSize.Value,
+                Total = query.Count(),
+                Records = list
+            };
+
+            return Ok(result);
         }
     }
 }
