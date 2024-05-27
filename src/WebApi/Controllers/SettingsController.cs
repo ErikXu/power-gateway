@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Amazon.Runtime.Internal;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using WebApi.Models;
@@ -29,6 +31,8 @@ namespace WebApi.Controllers
                     Id = ObjectId.Empty,
                     Latency = 500,
                     UserIdField = "userId",
+                    Endpoint = Request.GetEncodedUrl().Replace(Request.GetEncodedPathAndQuery(), string.Empty),
+                    DataKeepDays = 30,
                     CreateAt = DateTime.UtcNow,
                     UpdateAt = DateTime.UtcNow
                 };
@@ -50,6 +54,8 @@ namespace WebApi.Controllers
                     Id = ObjectId.Empty,
                     Latency = form.Latency,
                     UserIdField = form.UserIdField,
+                    Endpoint = form.Endpoint,
+                    DataKeepDays = form.DataKeepDays,
                     CreateAt = DateTime.UtcNow,
                     UpdateAt = DateTime.UtcNow
                 };
@@ -60,6 +66,8 @@ namespace WebApi.Controllers
             {
                 setting.Latency = form.Latency;
                 setting.UserIdField = form.UserIdField;
+                setting.Endpoint = form.Endpoint;
+                setting.DataKeepDays = form.DataKeepDays;
                 setting.UpdateAt = DateTime.UtcNow;
 
                 await _mongoDbContext.Collection<BasicSetting>().ReplaceOneAsync(n => n.Id == setting.Id, setting);

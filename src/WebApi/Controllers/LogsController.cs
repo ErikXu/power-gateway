@@ -9,6 +9,7 @@ using MongoDB.Driver.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.Extensions.Caching.Memory;
 using DynamicExpresso;
+using WebApi.Services;
 
 namespace WebApi.Controllers
 {
@@ -19,12 +20,14 @@ namespace WebApi.Controllers
         private readonly MongoDbContext _mongoDbContext;
         private readonly ILogger<LogsController> _logger;
         private readonly IMemoryCache _memoryCache;
+        private readonly ILarkService _larkService;
 
-        public LogsController(MongoDbContext mongoDbContext, ILogger<LogsController> logger, IMemoryCache memoryCache)
+        public LogsController(MongoDbContext mongoDbContext, ILogger<LogsController> logger, IMemoryCache memoryCache, ILarkService larkService)
         {
             _mongoDbContext = mongoDbContext;
             _logger = logger;
             _memoryCache = memoryCache;
+            _larkService = larkService;
         }
 
         [HttpPost("apisix")]
@@ -37,6 +40,7 @@ namespace WebApi.Controllers
 
                 foreach (var request in requests)
                 {
+                    request.Id = ObjectId.GenerateNewId();
                     if (request.Request.Headers.ContainsKey("authorization"))
                     {
                         var jwt = request.Request.Headers["authorization"].Replace("Bearer ", string.Empty);
@@ -61,19 +65,27 @@ namespace WebApi.Controllers
 
                         var rules = _mongoDbContext.Collection<AlarmRule>().AsQueryable().ToList();
 
-                        var target = new Interpreter();
-                        foreach (var rule in rules)
+                        if (rules.Count > 0)
                         {
-                            var fieldValue = string.Empty;
-                            if (rule.Field == "status")
+                            var setting = _memoryCache.Get<BasicSetting>(Program.BasicSettingKey);
+                            var target = new Interpreter();
+                            foreach (var rule in rules)
                             {
-                                fieldValue = request.Response.Status.ToString();
-                            }
+                                var fieldValue = string.Empty;
+                                if (rule.Field == "status")
+                                {
+                                    fieldValue = request.Response.Status.ToString();
+                                }
 
-                            var isMatched = target.Eval<bool>($"{fieldValue} {rule.Operator} {rule.Value}");
-                            if (isMatched)
-                            {
-                                // Alarm
+                                var isMatched = target.Eval<bool>($"{fieldValue} {rule.Operator} {rule.Value}");
+                                if (isMatched)
+                                {
+                                    var config = _mongoDbContext.Collection<AlarmConfig>().AsQueryable().SingleOrDefault(n => n.Id == rule.AlarmConfigId);
+                                    if (config != null)
+                                    {
+                                        await _larkService.SendRequestAlarmMsg(config.BotUrl, rule.Title, request, setting);
+                                    }
+                                }
                             }
                         }
                     }

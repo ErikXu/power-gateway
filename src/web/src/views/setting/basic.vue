@@ -9,6 +9,12 @@
       <el-form-item :label="$t('UserId Filed')" prop="userIdField">
         <el-input v-model="form.userIdField" />
       </el-form-item>
+      <el-form-item :label="$t('Endpoint')" prop="endpoint">
+        <el-input v-model="form.endpoint" />
+      </el-form-item>
+      <el-form-item :label="$t('Data Keep Days')" prop="dataKeepDays">
+        <el-input v-model="form.dataKeepDays" />
+      </el-form-item>
       <el-form-item>
         <el-button @click="reset">{{ $t('Reset') }}</el-button>
         <el-button type="primary" :disabled="submiting" :loading="submiting" @click.native.prevent="submit">{{ $t('Save') }}</el-button>
@@ -28,11 +34,14 @@ export default {
       submiting: false,
       form: {
         latency: 500,
-        userIdField: 'userId'
+        userIdField: 'userId',
+        endpoint: '',
+        dataKeepDays: 30
       },
       rules: {
         latency: [{ required: true, message: 'Please input latency', trigger: 'change' }],
-        userIdField: [{ required: true, message: 'Please input userId field', trigger: 'change' }]
+        userIdField: [{ required: true, message: 'Please input userId field', trigger: 'change' }],
+        endpoint: [{ required: true, message: 'Please input endpoint', trigger: 'change' }]
       }
     }
   },
@@ -76,6 +85,8 @@ export default {
     "Basic Setting": "Basic Setting",
     "Latency Benchmark": "Latency Benchmark",
     "UserId Filed": "UserId Filed",
+    "Endpoint": "Endpoint",
+    "Data Keep Days": "Data Keep Days",
     "Save": "Save",
     "Reset": "Reset"
   },
@@ -83,6 +94,8 @@ export default {
     "Basic Setting": "基础设置",
     "Latency Benchmark": "延迟基准",
     "UserId Filed": "用户标识",
+    "Endpoint": "访问入口",
+    "Data Keep Days": "数据保存天数",
     "Save": "保存",
     "Reset": "重置"
   }

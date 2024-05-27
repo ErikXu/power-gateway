@@ -10,6 +10,12 @@ namespace WebApi.Mongo.Entities
         [BsonElement("userIdField")]
         public string UserIdField { get; set; }
 
+        [BsonElement("endpoint")]
+        public string Endpoint { get; set; }
+
+        [BsonElement("dataKeepDays")]
+        public int DataKeepDays { get; set; }
+
         [BsonElement("updateAt")]
         public DateTime UpdateAt { get; set; }
     }

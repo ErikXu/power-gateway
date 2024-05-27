@@ -47,6 +47,8 @@ namespace WebApi
         }
 
         public static string FieldProjectionListKey { get; } = "Cache_FieldProjectionList";
+
+        public static string BasicSettingKey { get; } = "Cache_BasicSetting";
     }
 }
 

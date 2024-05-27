@@ -33,6 +33,10 @@ namespace WebApi.HostedServices
         {
             var projectionList = _mongoDbContext.Collection<FieldProjection>().AsQueryable().ToList();
             _memoryCache.Set(Program.FieldProjectionListKey, projectionList);
+
+            var setting = _mongoDbContext.Collection<BasicSetting>().AsQueryable().FirstOrDefault();
+            _memoryCache.Set(Program.BasicSettingKey, setting);
+
             _logger.LogInformation("[Refresh cache hosted service] Projection cache refreshed.");
         }
 

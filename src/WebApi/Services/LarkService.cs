@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using RestSharp;
+using WebApi.Mongo.Entities;
 
 namespace WebApi.Services
 {
@@ -10,6 +11,8 @@ namespace WebApi.Services
         public Task SendLarkPostMsg(string url, LarkPostMsgRequest larkPostMsgRequest);
 
         public Task SendTestMsg(string url, string title, string message);
+
+        public Task SendRequestAlarmMsg(string url, string title, ApisixLogRequest apisixLogRequest, BasicSetting setting);
     }
 
     public class LarkService : ILarkService
@@ -83,6 +86,53 @@ namespace WebApi.Services
                     }
                 }
             };
+
+            await SendLarkPostMsg(url, larkPostMsgRequest);
+        }
+
+        public async Task SendRequestAlarmMsg(string url, string title, ApisixLogRequest apisixLogRequest, BasicSetting setting)
+        {
+            var larkPostMsgRequest = new LarkPostMsgRequest
+            {
+                Content = new LarkPostMsgContent
+                {
+                    Post = new LarkPostMsgContentPost
+                    {
+                        EnUs = new LarkPostMsgContentEnUs
+                        {
+                            Title = title,
+                            Content = new List<List<LarkPostMsgContentItem>>()
+                        }
+                    }
+                }
+            };
+
+            larkPostMsgRequest.Content.Post.EnUs.Content.Add(new List<LarkPostMsgContentItem>() { new LarkPostMsgContentItem { Tag = "text", Text = $"Start Time：{DateTimeOffset.FromUnixTimeMilliseconds(apisixLogRequest.StartTime).ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")}" } });
+            larkPostMsgRequest.Content.Post.EnUs.Content.Add(new List<LarkPostMsgContentItem>() { new LarkPostMsgContentItem { Tag = "text", Text = $"Client Ip：{apisixLogRequest.ClientIp}" } });
+            larkPostMsgRequest.Content.Post.EnUs.Content.Add(new List<LarkPostMsgContentItem>() { new LarkPostMsgContentItem { Tag = "text", Text = $"Url：{apisixLogRequest.Request.Url}" } });
+            larkPostMsgRequest.Content.Post.EnUs.Content.Add(new List<LarkPostMsgContentItem>() { new LarkPostMsgContentItem { Tag = "text", Text = $"Latency：{apisixLogRequest.Latency}" } });
+            larkPostMsgRequest.Content.Post.EnUs.Content.Add(new List<LarkPostMsgContentItem>() { new LarkPostMsgContentItem { Tag = "text", Text = $"Status：{apisixLogRequest.Response.Status}" } });
+
+            if (apisixLogRequest.Request.Jwt != null && apisixLogRequest.Request.Jwt.Count > 0)
+            {
+                foreach (var jwt in apisixLogRequest.Request.Jwt)
+                {
+                    larkPostMsgRequest.Content.Post.EnUs.Content.Add(new List<LarkPostMsgContentItem>() { new LarkPostMsgContentItem { Tag = "text", Text = $"{jwt.Key}: {jwt.Value}" } });
+                }
+            }
+
+            if (apisixLogRequest.Request.Projection != null && apisixLogRequest.Request.Projection.Count > 0)
+            {
+                foreach (var projection in apisixLogRequest.Request.Projection)
+                {
+                    larkPostMsgRequest.Content.Post.EnUs.Content.Add(new List<LarkPostMsgContentItem>() { new LarkPostMsgContentItem { Tag = "text", Text = $"{projection.Key}: {projection.Value}" } });
+                }
+            }
+
+            if (setting != null && !string.IsNullOrWhiteSpace(setting.Endpoint))
+            {
+                larkPostMsgRequest.Content.Post.EnUs.Content.Add(new List<LarkPostMsgContentItem>() { new LarkPostMsgContentItem { Tag = "text", Text = $"Details：{setting.Endpoint}/zh#/apisix-request-log/{apisixLogRequest.Id}" } });
+            }
 
             await SendLarkPostMsg(url, larkPostMsgRequest);
         }
