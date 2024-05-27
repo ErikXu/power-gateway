@@ -1,4 +1,5 @@
 
+using Amazon.Runtime.Internal;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
@@ -45,6 +46,12 @@ namespace WebApi.HostedServices
 
             CalculateIpRequest1Munite(now);
             CalculateIpRequest1Hour(now);
+
+            if (!string.IsNullOrWhiteSpace(basicSetting.UserIdField))
+            {
+                CalculateUserRequest1Munite(now, basicSetting.UserIdField);
+                CalculateUserRequest1Hour(now, basicSetting.UserIdField);
+            }
         }
 
         private void CalculateQps1Munite(DateTime now, BasicSetting basicSetting)
@@ -262,7 +269,6 @@ namespace WebApi.HostedServices
             var endTimestamp = new DateTimeOffset(endTime).Millisecond;
             var startTimestamp = new DateTimeOffset(startTime).Millisecond;
 
-
             var logs = _mongoDbContext.Collection<ApisixLogRequest>().AsQueryable()
                                       .Where(n => n.StartTime >= endTimestamp && n.StartTime < startTimestamp)
                                       .Select(n => new { n.ClientIp, n.StartTime })
@@ -297,6 +303,110 @@ namespace WebApi.HostedServices
                 }).ToList();
 
                 _mongoDbContext.Collection<IpRequest1Hour>().InsertMany(ipRequest1Hour);
+            }
+        }
+
+        private void CalculateUserRequest1Munite(DateTime now, string userIdField)
+        {
+            var endTime = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0, DateTimeKind.Utc);
+            var startTime = endTime.AddMinutes(-1);
+
+            var endTimestamp = new DateTimeOffset(endTime).Millisecond;
+            var startTimestamp = new DateTimeOffset(startTime).Millisecond;
+
+            var logs = _mongoDbContext.Collection<ApisixLogRequest>().AsQueryable()
+                                      .Where(n => n.Request.Jwt != null && n.Request.Jwt.Count > 0 && n.StartTime >= endTimestamp && n.StartTime < startTimestamp)
+                                      .Select(n => new { n.Request.Jwt, n.StartTime })
+                                      .ToList();
+
+            if (logs.Count <= 0)
+            {
+                return;
+            }
+            else
+            {
+                var dic = new Dictionary<string, int>();
+                foreach (var log in logs)
+                {
+                    if (!log.Jwt.ContainsKey(userIdField))
+                    {
+                        continue;
+                    }
+
+                    var userId = log.Jwt[userIdField];
+
+                    if (dic.ContainsKey(userId))
+                    {
+                        dic[userId] = dic[userId] + 1;
+                    }
+                    else
+                    {
+                        dic[userId] = 1;
+                    }
+                }
+
+                var userRequest1Munite = dic.Select(n => new UserRequest1Munite
+                {
+                    Time = endTime,
+                    Text = endTime.ToLocalTime().ToString("HH:mm"),
+                    UserId = n.Key,
+                    Count = n.Value,
+                    CreateAt = DateTime.UtcNow
+                }).ToList();
+
+                _mongoDbContext.Collection<UserRequest1Munite>().InsertMany(userRequest1Munite);
+            }
+        }
+
+        private void CalculateUserRequest1Hour(DateTime now, string userIdField)
+        {
+            var endTime = new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0, DateTimeKind.Utc);
+            var startTime = endTime.AddHours(-1);
+
+            var endTimestamp = new DateTimeOffset(endTime).Millisecond;
+            var startTimestamp = new DateTimeOffset(startTime).Millisecond;
+
+            var logs = _mongoDbContext.Collection<ApisixLogRequest>().AsQueryable()
+                                      .Where(n => n.Request.Jwt != null && n.Request.Jwt.Count > 0 && n.StartTime >= endTimestamp && n.StartTime < startTimestamp)
+                                      .Select(n => new { n.Request.Jwt, n.StartTime })
+                                      .ToList();
+
+            if (logs.Count <= 0)
+            {
+                return;
+            }
+            else
+            {
+                var dic = new Dictionary<string, int>();
+                foreach (var log in logs)
+                {
+                    if (!log.Jwt.ContainsKey(userIdField))
+                    {
+                        continue;
+                    }
+
+                    var userId = log.Jwt[userIdField];
+
+                    if (dic.ContainsKey(userId))
+                    {
+                        dic[userId] = dic[userId] + 1;
+                    }
+                    else
+                    {
+                        dic[userId] = 1;
+                    }
+                }
+
+                var userRequest1Hour = dic.Select(n => new UserRequest1Hour
+                {
+                    Time = endTime,
+                    Text = endTime.ToLocalTime().ToString("MM-dd HH"),
+                    UserId = n.Key,
+                    Count = n.Value,
+                    CreateAt = DateTime.UtcNow
+                }).ToList();
+
+                _mongoDbContext.Collection<UserRequest1Hour>().InsertMany(userRequest1Hour);
             }
         }
 

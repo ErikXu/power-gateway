@@ -73,13 +73,33 @@ export const constantRoutes = [
         path: '1m',
         name: 'ip-request-1m',
         component: () => import('@/views/request/ip/munite'),
-        meta: { title: 'Ip Request 1 Munite', icon: 'el-icon-document' }
+        meta: { title: '1 Munite', icon: 'el-icon-document' }
       },
       {
         path: '1h',
         name: 'ip-request-1h',
         component: () => import('@/views/request/ip/hour'),
-        meta: { title: 'Ip Request 1 Hour', icon: 'el-icon-document' }
+        meta: { title: '1 Hour', icon: 'el-icon-document' }
+      }]
+  },
+
+  {
+    path: '/user-request',
+    component: Layout,
+    name: 'user-request',
+    meta: { title: 'User Request', icon: 'el-icon-folder' },
+    children: [
+      {
+        path: '1m',
+        name: 'user-request-1m',
+        component: () => import('@/views/request/user/munite'),
+        meta: { title: '1 Munite', icon: 'el-icon-document' }
+      },
+      {
+        path: '1h',
+        name: 'user-request-1h',
+        component: () => import('@/views/request/user/hour'),
+        meta: { title: '1 Hour', icon: 'el-icon-document' }
       }]
   },
 

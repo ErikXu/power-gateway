@@ -81,5 +81,69 @@ namespace WebApi.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("user/1m")]
+        public IActionResult ListUserRequest1Munite([FromQuery] int? pageIndex, [FromQuery] int? pageSize)
+        {
+            if (pageIndex == null || pageIndex.Value <= 0)
+            {
+                pageIndex = 1;
+            }
+
+            if (pageSize == null || pageSize.Value <= 0)
+            {
+                pageSize = 1;
+            }
+
+            var query = _mongoDbContext.Collection<UserRequest1Munite>().AsQueryable();
+
+            var logs = query.OrderByDescending(n => n.Time)
+                            .ThenByDescending(n => n.Count)
+                            .Skip((pageIndex.Value - 1) * pageSize.Value)
+                            .Take(pageSize.Value)
+                            .ToList();
+
+            var result = new PagingResult<UserRequest1Munite>
+            {
+                PageIndex = pageIndex.Value,
+                PageSize = pageSize.Value,
+                Total = query.Count(),
+                Records = logs
+            };
+
+            return Ok(result);
+        }
+
+        [HttpGet("user/1h")]
+        public IActionResult ListUserRequest1Hour([FromQuery] int? pageIndex, [FromQuery] int? pageSize)
+        {
+            if (pageIndex == null || pageIndex.Value <= 0)
+            {
+                pageIndex = 1;
+            }
+
+            if (pageSize == null || pageSize.Value <= 0)
+            {
+                pageSize = 1;
+            }
+
+            var query = _mongoDbContext.Collection<UserRequest1Hour>().AsQueryable();
+
+            var logs = query.OrderByDescending(n => n.Time)
+                            .ThenByDescending(n => n.Count)
+                            .Skip((pageIndex.Value - 1) * pageSize.Value)
+                            .Take(pageSize.Value)
+                            .ToList();
+
+            var result = new PagingResult<UserRequest1Hour>
+            {
+                PageIndex = pageIndex.Value,
+                PageSize = pageSize.Value,
+                Total = query.Count(),
+                Records = logs
+            };
+
+            return Ok(result);
+        }
     }
 }

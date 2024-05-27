@@ -43,7 +43,7 @@
           <span>{{ row.status }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('Operation')" align="center" width="80">
+      <el-table-column :label="$t('Operation')" align="center" width="100">
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="detail(row)">
             {{ $t('Detail') }}

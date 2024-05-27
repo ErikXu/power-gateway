@@ -2,7 +2,7 @@
   <div class="app-container">
     <h3>{{ $t('Basic Setting') }}</h3>
 
-    <el-form ref="form" :model="form" label-width="140px">
+    <el-form ref="form" :model="form" label-width="180px">
       <el-form-item :label="$t('Latency Benchmark')" prop="latency">
         <el-input v-model="form.latency" />
       </el-form-item>

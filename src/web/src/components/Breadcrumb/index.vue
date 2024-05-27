@@ -90,8 +90,9 @@ export default {
     "Basic Setting": "Basic Setting",
     "Field Projection": "Field Projection",
     "Ip Request": "Ip Request",
-    "Ip Request 1 Munite": "Ip Request 1 Munite",
-    "Ip Request 1 Hour": "Ip Request 1 Hour"
+    "User Request": "User Request",
+    "1 Munite": "1 Munite",
+    "1 Hour": "1 Hour"
   },
   "zh": {
     "Home": "主页",
@@ -104,8 +105,9 @@ export default {
     "Basic Setting": "基础设置",
     "Field Projection": "字段映射",
     "Ip Request": "Ip 请求",
-    "Ip Request 1 Munite": "每分钟 Ip 请求",
-    "Ip Request 1 Hour": "每小时 Ip 请求"
+    "User Request": "用户请求",
+    "1 Munite": "每分钟",
+    "1 Hour": "每小时"
   }
 }
 </i18n>

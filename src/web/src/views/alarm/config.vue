@@ -39,7 +39,7 @@
           <span>{{ row.createAt | simpleFormat }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('Operation')" align="center" width="80">
+      <el-table-column :label="$t('Operation')" align="center" width="100">
         <template slot-scope="{row}">
           <el-button type="success" size="mini" @click="check(row)">
             {{ $t('Check') }}
